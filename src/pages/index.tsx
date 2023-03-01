@@ -1,3 +1,6 @@
+import { convert } from "@/components/markdown"
+import TestRequest from "@/components/request"
+
 export default function Home() {
   return (
     <div>
@@ -13,15 +16,38 @@ export default function Home() {
           springing up around the country.
         </p>
       </article>
-      <article className="prose dark:prose-invert">
-        # Markdown Test
+      <TestRequest />
+      <article className="dark:bg-neutral-700 prose dark:prose-invert">
+        {convert(`
+# Markdown Test
 
-        - list 1
-        - list 2
+- list 1
+- list 2
 
-        | test | table |
-        | :--- | ----: |
-        | value1 | value2 |
+| test | table |
+| :- | -: |
+| value1 | value2 |
+| value1 | value2 |
+| value1 | value2 |
+
+
+## Tasklist
+
+* [ ] to do
+* [x] done
+
+## Autolink literals
+
+www.example.com, https://example.com, and contact@example.com.
+
+A note[^1]
+
+[^1]: Big note.
+
+## Strikethrough
+
+~one~ or ~~two~~ tildes.
+`)}
       </article>
     </div>
   )
