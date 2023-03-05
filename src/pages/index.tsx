@@ -1,5 +1,7 @@
 import { convert } from "@/components/markdown"
-import TestRequest from "@/components/request"
+import Retrieve from "@/components/fetchGit"
+import GithubPost from "@/components/posts"
+import TestRequest from "@/components/testRequest"
 
 export default function Home() {
   return (
@@ -16,6 +18,7 @@ export default function Home() {
           springing up around the country.
         </p>
       </article>
+      <Retrieve />
       <TestRequest />
       <article className="dark:bg-neutral-700 prose dark:prose-invert">
         {convert(`
