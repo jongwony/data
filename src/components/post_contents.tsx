@@ -1,5 +1,6 @@
 import { convert } from "./markdown";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { urlContext } from "@/pages/blog";
 
 const getContent = async (downloadUrl: string) => {
     return await fetch(downloadUrl, {
@@ -9,20 +10,17 @@ const getContent = async (downloadUrl: string) => {
     })
 }
 
-type GitHubProps = {
-    downloadUrl: string
-}
-
-export default function GitHubContent({downloadUrl}: GitHubProps) {
+export default function GitHubContent() {
     const [data, setData] = useState('')
+    const url = useContext(urlContext)
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await getContent(downloadUrl)
+            const response = await getContent(url)
             setData(await response.text())
         }
         fetchData().catch(console.error)
-    }, [])
+    }, [url])
 
     return (
         <article className="prose lg:prose-xl dark:prose-invert">
