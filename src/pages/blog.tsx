@@ -20,12 +20,20 @@ export const urlContext = createContext('')
 
 export default function BlogMain() {
     const [data, setData] = useState([])
-    const [url, setUrl] = useState('')
+    const [item, setItem] = useState(Object)
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
+    };
 
     useEffect(() => {
         // Update the document title using the browser API
         const fetchData = async () => {
-            setData(await postList())
+            const posts = await postList()
+            posts.reverse()
+            setData(posts)
+            setItem(posts.at(0))
         }
         fetchData().catch(console.error)
     }, []);
@@ -33,23 +41,38 @@ export default function BlogMain() {
     return (
         <div>
             <TopNav />
-            <div className="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
-                <urlContext.Provider value={url}>
-                    <div className="hidden lg:block fixed z-20 inset-0 top-[3.8125rem] left-[max(0px,calc(50%-45rem))] right-auto w-[19.5rem] pb-10 px-8 overflow-y-auto">
-                        <RetrieveLists>
-                            {data.map((x) => (
-                                <button key={x['name']} onClick={() => setUrl(x['download_url'])}
-                                    className="block border-l pl-4 -ml-px border-transparent hover:border-slate-400 dark:hover:border-slate-500 text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300" >
-                                    {x['name']}
-                                </button>
-                            ))}
-                        </ RetrieveLists>
-                    </div>
-                    <div className="lg:pl-[19.5rem]">
-                        <GitHubContent />
-                    </div>
-                </urlContext.Provider>
-            </div>
+            <urlContext.Provider value={item['download_url']}>
+                <div className="flex items-center p-4 border-b border-slate-900/10 lg:hidden dark:border-slate-50/[0.06]">
+                    <button type="button" className="text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300"
+                        onClick={toggleDropdown}
+                    >
+                        <span className="sr-only">Navigation</span>
+                        <svg width="24" height="24"><path d="M5 6h14M5 12h14M5 18h14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"></path></svg>
+                    </button>
+                    <ol className="ml-4 flex text-sm leading-6 whitespace-nowrap min-w-0">
+                        <li className="flex items-center">
+                            {item['name']}
+                            <svg width="3" height="6" aria-hidden="true" className="mx-3 overflow-visible text-slate-400"><path d="M0 0L3 3L0 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"></path></svg>
+                        </li>
+                        <li className="font-semibold text-slate-900 truncate dark:text-slate-200">
+                            {item['title']}
+                        </li>
+                    </ol>
+                </div>
+                <div className="hidden lg:block fixed z-20 inset-0 top-[3.8125rem] right-auto pb-10 px-8 overflow-y-auto">
+                    <RetrieveLists>
+                        {data.map((x) => (
+                            <button key={x['name']} onClick={() => setItem(x)}
+                                className="block border-l pl-4 -ml-px border-transparent hover:border-slate-400 dark:hover:border-slate-500 text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300" >
+                                {x['name']}
+                            </button>
+                        ))}
+                    </RetrieveLists>
+                </div>
+                <div className="lg:pl-[19.5rem]">
+                    <GitHubContent />
+                </div>
+            </urlContext.Provider>
         </div>
     )
 }
