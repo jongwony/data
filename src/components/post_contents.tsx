@@ -16,8 +16,10 @@ export default function GitHubContent() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await getContent(url)
-            setData(await response.text())
+            if (url !== undefined) {
+                const response = await getContent(url)
+                setData(await response.text())
+            }
         }
         fetchData().catch(console.error)
     }, [url])
